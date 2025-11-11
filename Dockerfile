@@ -7,11 +7,14 @@ USER root
 # Install FFmpeg (Alpine-based image uses apk)
 RUN apk add --no-cache ffmpeg
 
-# Ensure n8n binary is available in PATH
-ENV PATH="/usr/local/bin:${PATH}"
+# Switch back to node user for security
+USER node
+
+# Set working directory
+WORKDIR /home/node
 
 # Expose n8n default port
 EXPOSE 5678
 
-# Start n8n (explicit full path to avoid not-found issue)
-CMD ["/usr/local/bin/n8n", "start"]
+# Start n8n using the correct command
+CMD ["n8n", "start"]
