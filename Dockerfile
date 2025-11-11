@@ -18,5 +18,5 @@ WORKDIR /home/node
 # Expose n8n default port
 EXPOSE 5678
 
-# Start n8n
-CMD ["n8n", "start"]
+# Start n8n (without "start" command)
+CMD ["n8n"]
