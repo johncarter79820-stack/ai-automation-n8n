@@ -1,13 +1,15 @@
-# Base image
-FROM n8nio/n8n:latest
+# Use Node.js base image instead
+FROM node:18-alpine
 
-# Switch to root user to install packages
-USER root
+# Install n8n and ffmpeg
+RUN apk add --no-cache ffmpeg && \
+    npm install -g n8n
 
-# Install FFmpeg (Alpine-based image uses apk)
-RUN apk add --no-cache ffmpeg
+# Create directory for n8n
+RUN mkdir -p /home/node/.n8n && \
+    chown -R node:node /home/node
 
-# Switch back to node user for security
+# Switch to non-root user
 USER node
 
 # Set working directory
@@ -16,5 +18,5 @@ WORKDIR /home/node
 # Expose n8n default port
 EXPOSE 5678
 
-# Start n8n using the correct command
+# Start n8n
 CMD ["n8n", "start"]
