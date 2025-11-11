@@ -1,22 +1,23 @@
-# Use Node.js base image instead
 FROM node:18-alpine
 
-# Install n8n and ffmpeg
-RUN apk add --no-cache ffmpeg && \
-    npm install -g n8n
-
-# Create directory for n8n
-RUN mkdir -p /home/node/.n8n && \
-    chown -R node:node /home/node
-
-# Switch to non-root user
-USER node
-
 # Set working directory
-WORKDIR /home/node
+WORKDIR /app
 
-# Expose n8n default port
+# Install n8n and dependencies
+RUN apk add --no-cache \
+    ffmpeg \
+    python3 \
+    make \
+    g++ \
+    && npm install -g n8n@latest
+
+# Expose port
 EXPOSE 5678
 
-# Start n8n (without "start" command)
-CMD ["n8n"]
+# Set environment variables
+ENV N8N_PORT=5678
+ENV N8N_PROTOCOL=http
+ENV N8N_HOST=0.0.0.0
+
+# Start n8n directly
+CMD ["node", "/usr/local/lib/node_modules/n8n/bin/n8n"]
